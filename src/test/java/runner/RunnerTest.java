@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
         features = "src/test/java/features/",
         glue = {"steps", "hooks"},
-        tags = {"@SmokeTest"},
+        tags = {"@all"},
         snippets = SnippetType.CAMELCASE
 )
 
