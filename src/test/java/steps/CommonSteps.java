@@ -21,12 +21,10 @@ public class CommonSteps extends BaseExecutor {
 
     @Когда("^выполнен POST запрос на URL \"(.*)\" с параметрами из таблицы$")
     public void postRequestWithParameters(String url, Map<String, String> params) {
-
         JSONObject requestParams = new JSONObject();
         for (Map.Entry<String, String> param : params.entrySet()) {
             requestParams.put(param.getKey(), param.getValue());
         }
-
         response = given().
                 contentType("application/json").
                 body(requestParams.toJSONString()).
@@ -35,6 +33,8 @@ public class CommonSteps extends BaseExecutor {
                 then().
                 extract().
                 response();
+        System.out.println("GUID:");
+        System.out.println(response.jsonPath().get("guid").toString());
     }
 
     @То("^вывод ответа$")
