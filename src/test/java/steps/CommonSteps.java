@@ -3,6 +3,7 @@ package steps;
 import com.github.javafaker.Faker;
 import cucumber.api.java.ru.Когда;
 import cucumber.api.java.ru.То;
+import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.response.Response;
 import org.json.simple.JSONObject;
 
@@ -42,6 +43,7 @@ public class CommonSteps {
                 contentType("application/json").
                 body(requestParams.toJSONString()).
                 when().
+//                log().all().
                 post(url);
         Map<String, String> createdGuid = new HashMap<>();
         createdGuid.put("guid", response.jsonPath().get("guid").toString());
