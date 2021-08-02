@@ -10,8 +10,8 @@
       | personSurname    | test       |
       | personPatronymic | test       |
       | passportNumber   | test       |
-      | dateFrom         | 20.07.2020 |
-      | dateTo           | 20.07.2023 |
+      | dateFrom         | 2020-07-20 |
+      | dateTo           | 2023-07-20 |
     * код ответа "200"
     * сохранен GUID из ответа
     * выполнен GET запрос на URL "http://localhost:8080/pass/" с сохраненным GUID
@@ -27,8 +27,8 @@
       | personSurname    | test       |
       | personPatronymic | test       |
       | passportNumber   | test       |
-      | dateFrom         | 20.07.2020 |
-      | dateTo           | 20.07.2020 |
+      | dateFrom         | 2020-07-20 |
+      | dateTo           | 2020-07-20 |
     * код ответа "200"
     * сохранен GUID из ответа
     * выполнен GET запрос на URL "http://localhost:8080/pass/" с сохраненным GUID
