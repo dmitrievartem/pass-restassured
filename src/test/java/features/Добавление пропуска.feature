@@ -1,7 +1,8 @@
 # language: ru
 
-@all
+@all @addPass
 Функционал: Добавление пропуска
+  Метод POST http://localhost:8080/pass
 
   @main
   Сценарий: Добавление нового валидного пропуска

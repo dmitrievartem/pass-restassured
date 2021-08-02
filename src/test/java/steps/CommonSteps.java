@@ -3,7 +3,6 @@ package steps;
 import com.github.javafaker.Faker;
 import cucumber.api.java.ru.Когда;
 import cucumber.api.java.ru.То;
-import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.response.Response;
 import org.json.simple.JSONObject;
 
@@ -25,12 +24,18 @@ public class CommonSteps {
 
     @Когда("^выполнен GET запрос на URL \"(.*)\"$")
     public void getRequest(String url) {
-        response = get(url);
+        response =
+//                given().
+//                log().all().
+                get(url);
     }
 
     @Когда("^выполнен GET запрос на URL \"(.*)\" с сохраненным GUID$")
     public void getRequestWithGuid(String url) {
-        response = get(url.concat(guid));
+        response =
+//                given().
+//                log().all().
+                get(url.concat(guid));
     }
 
     @Когда("^выполнен POST запрос на URL \"(.*)\" с параметрами из таблицы$")
@@ -62,6 +67,7 @@ public class CommonSteps {
                 contentType("application/json").
                 body(requestParams.toJSONString()).
                 when().
+//                log().all().
                 post(url);
         Map<String, String> createdPass = new HashMap<>();
         createdPass.put("guid", response.jsonPath().get("guid").toString());
@@ -81,6 +87,7 @@ public class CommonSteps {
                 contentType("application/json").
                 body(requestParams.toJSONString()).
                 when().
+//                log().all().
                 put(url);
         Map<String, String> createdPass = new HashMap<>();
         createdPass.put("guid", guid);
@@ -99,6 +106,7 @@ public class CommonSteps {
                 contentType("application/json").
                 body(requestParams.toJSONString()).
                 when().
+//                log().all().
                 put(url);
         Map<String, String> createdPass = new HashMap<>();
         createdPass.put("guid", guid);
@@ -110,7 +118,10 @@ public class CommonSteps {
     @Когда("^выполнен DELETE запрос на URL \"(.*)\" с сохраненным GUID$")
     public void deleteRequestWithSavedGuid(String url) {
         url = url.concat(guid);
-        response = delete(url);
+        response =
+//                given().
+//                log().all().
+                delete(url);
     }
 
     @То("^параметры в ответе соответствуют отправленным$")
