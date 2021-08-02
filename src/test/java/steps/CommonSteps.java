@@ -45,10 +45,10 @@ public class CommonSteps {
                 when().
 //                log().all().
                 post(url);
-        Map<String, String> createdGuid = new HashMap<>();
-        createdGuid.put("guid", response.jsonPath().get("guid").toString());
-        createdGuid.putAll(params);
-        requestParamsWithGuid = createdGuid;
+        Map<String, String> createdPass = new HashMap<>();
+        createdPass.put("guid", response.jsonPath().get("guid").toString());
+        createdPass.putAll(params);
+        requestParamsWithGuid = createdPass;
     }
 
     @Когда("^выполнен POST запрос на URL \"(.*)\" со сгенерированными случайными параметрами$")
@@ -63,14 +63,14 @@ public class CommonSteps {
                 body(requestParams.toJSONString()).
                 when().
                 post(url);
-        Map<String, String> createdGuid = new HashMap<>();
-        createdGuid.put("guid", response.jsonPath().get("guid").toString());
-        createdGuid.putAll(params);
-        requestParamsWithGuid = createdGuid;
+        Map<String, String> createdPass = new HashMap<>();
+        createdPass.put("guid", response.jsonPath().get("guid").toString());
+        createdPass.putAll(params);
+        requestParamsWithGuid = createdPass;
     }
 
     @Когда("^выполнен PUT запрос на URL \"(.*)\" со сгенерированными случайными параметрами и сохраненным GUID$")
-    public void putRequestWithParameters(String url) {
+    public void putRequestWithGeneratedParameters(String url) {
         url = url.concat(guid);
         JSONObject requestParams = new JSONObject();
         Map<String, String> params = createRequestParams();
@@ -82,11 +82,30 @@ public class CommonSteps {
                 body(requestParams.toJSONString()).
                 when().
                 put(url);
-        Map<String, String> createdGuid = new HashMap<>();
-        createdGuid.put("guid", guid);
-        createdGuid.putAll(params);
-        requestParamsWithGuid = createdGuid;
+        Map<String, String> createdPass = new HashMap<>();
+        createdPass.put("guid", guid);
+        createdPass.putAll(params);
+        requestParamsWithGuid = createdPass;
     }
+
+    @Когда("^выполнен PUT запрос на URL \"(.*)\" с параметрами из таблицы и сохраненным GUID$")
+    public void putRequestWithParametersFromTable(String url, Map<String, String> params) {
+        url = url.concat(guid);
+        JSONObject requestParams = new JSONObject();
+        for (Map.Entry<String, String> param : params.entrySet()) {
+            requestParams.put(param.getKey(), param.getValue());
+        }
+        response = given().
+                contentType("application/json").
+                body(requestParams.toJSONString()).
+                when().
+                put(url);
+        Map<String, String> createdPass = new HashMap<>();
+        createdPass.put("guid", guid);
+        createdPass.putAll(params);
+        requestParamsWithGuid = createdPass;
+    }
+
 
     @Когда("^выполнен DELETE запрос на URL \"(.*)\" с сохраненным GUID$")
     public void deleteRequestWithSavedGuid(String url) {
@@ -106,8 +125,13 @@ public class CommonSteps {
             } catch (NullPointerException e) {
 //                System.out.println("NO VALUE FOR \"" + param.getKey() + "\"");
             }
-
         }
+    }
+
+    @То("^параметр guid в ответе равен сохраененному guid$")
+    public void responseGuidMatchWithSavedGuid() {
+        String responseValue = response.jsonPath().get("guid").toString();
+        assertThat(responseValue, equalTo(guid));
     }
 
     @То("^код ответа \"(.*)\"$")
