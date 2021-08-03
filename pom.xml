@@ -16,6 +16,7 @@
         <maven.surefire>2.22.1</maven.surefire>
         <maven.compiler>3.7.0</maven.compiler>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version.cucumber>4.2.0</version.cucumber>
     </properties>
 
     <dependencies>
@@ -54,6 +55,12 @@
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>
             <version>1.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${version.cucumber}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

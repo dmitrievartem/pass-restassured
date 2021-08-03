@@ -45,6 +45,7 @@ public class CommonSteps {
             requestParams.put(param.getKey(), param.getValue());
         }
         response = given().
+//                filter(logFilter).
                 contentType("application/json").
                 body(requestParams.toJSONString()).
                 when().
