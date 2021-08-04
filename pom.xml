@@ -16,7 +16,6 @@
         <maven.surefire>2.22.1</maven.surefire>
         <maven.compiler>3.7.0</maven.compiler>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.cucumber>4.2.0</version.cucumber>
     </properties>
 
     <dependencies>
@@ -59,7 +58,7 @@
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
-            <version>${version.cucumber}</version>
+            <version>4.2.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -3,8 +3,13 @@ package steps;
 import com.github.javafaker.Faker;
 import cucumber.api.java.ru.Когда;
 import cucumber.api.java.ru.То;
+import io.qameta.allure.restassured.AllureRestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.LogDetail;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
+import io.restassured.specification.RequestSpecification;
 import org.json.simple.JSONObject;
 
 import java.time.LocalDate;
@@ -22,12 +27,19 @@ public class CommonSteps {
     public Response response;
     public String guid;
     public Map<String, String> requestParamsWithGuid;
+    private RequestSpecification requestSpecification = new RequestSpecBuilder()
+            .log(LogDetail.ALL)
+            .addFilter(new AllureRestAssured())
+            .build();
 
     @Когда("^выполнен GET запрос на URL \"(.*)\"$")
     public void getRequest(String url) {
         response =
                 given().
+                spec(requestSpecification).
                 // log().all().
+//                log(LogDetail.ALL).
+//                addFilter(new AllureRestAssured()).
                 get(url);
     }
 
@@ -35,6 +47,7 @@ public class CommonSteps {
     public void getRequestWithGuid(String url) {
         response =
                 given().
+                spec(requestSpecification).
                 // log().all().
                 get(url.concat(guid));
     }
@@ -47,6 +60,7 @@ public class CommonSteps {
         }
         response =
                 given().
+                spec(requestSpecification).
                 contentType("application/json").
                 body(requestParams.toJSONString()).
                 when().
@@ -67,6 +81,7 @@ public class CommonSteps {
         }
         response =
                 given().
+                spec(requestSpecification).
                 contentType("application/json").
                 body(requestParams.toJSONString()).
                 when().
@@ -88,6 +103,7 @@ public class CommonSteps {
         }
         response =
                 given().
+                spec(requestSpecification).
                 contentType("application/json").
                 body(requestParams.toJSONString()).
                 when().
@@ -108,6 +124,7 @@ public class CommonSteps {
         }
         response =
                 given().
+                spec(requestSpecification).
                 contentType("application/json").
                 body(requestParams.toJSONString()).
                 when().
@@ -125,6 +142,7 @@ public class CommonSteps {
         url = url.concat(guid);
         response =
                 given().
+                spec(requestSpecification).
                 // log().all().
                 delete(url);
     }
