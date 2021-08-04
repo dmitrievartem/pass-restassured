@@ -6,7 +6,6 @@ import cucumber.api.java.ru.То;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 import io.restassured.specification.RequestSpecification;
@@ -27,7 +26,7 @@ public class CommonSteps {
     public Response response;
     public String guid;
     public Map<String, String> requestParamsWithGuid;
-    private RequestSpecification requestSpecification = new RequestSpecBuilder()
+    private final RequestSpecification requestSpecification = new RequestSpecBuilder()
             .log(LogDetail.ALL)
             .addFilter(new AllureRestAssured())
             .build();
@@ -37,9 +36,6 @@ public class CommonSteps {
         response =
                 given().
                 spec(requestSpecification).
-                // log().all().
-//                log(LogDetail.ALL).
-//                addFilter(new AllureRestAssured()).
                 get(url);
     }
 
@@ -48,7 +44,6 @@ public class CommonSteps {
         response =
                 given().
                 spec(requestSpecification).
-                // log().all().
                 get(url.concat(guid));
     }
 
@@ -64,7 +59,6 @@ public class CommonSteps {
                 contentType("application/json").
                 body(requestParams.toJSONString()).
                 when().
-                // log().all().
                 post(url);
         Map<String, String> createdPass = new HashMap<>();
         createdPass.put("guid", response.jsonPath().get("guid").toString());
@@ -85,7 +79,6 @@ public class CommonSteps {
                 contentType("application/json").
                 body(requestParams.toJSONString()).
                 when().
-                // log().all().
                 post(url);
         Map<String, String> createdPass = new HashMap<>();
         createdPass.put("guid", response.jsonPath().get("guid").toString());
@@ -107,7 +100,6 @@ public class CommonSteps {
                 contentType("application/json").
                 body(requestParams.toJSONString()).
                 when().
-                // log().all().
                 put(url);
         Map<String, String> createdPass = new HashMap<>();
         createdPass.put("guid", guid);
@@ -128,7 +120,6 @@ public class CommonSteps {
                 contentType("application/json").
                 body(requestParams.toJSONString()).
                 when().
-                // log().all().
                 put(url);
         Map<String, String> createdPass = new HashMap<>();
         createdPass.put("guid", guid);
@@ -143,7 +134,6 @@ public class CommonSteps {
         response =
                 given().
                 spec(requestSpecification).
-                // log().all().
                 delete(url);
     }
 
