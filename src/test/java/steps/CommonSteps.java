@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import cucumber.api.java.ru.Когда;
 import cucumber.api.java.ru.То;
 import io.restassured.response.Response;
+
 import org.json.simple.JSONObject;
 
 import java.time.LocalDate;
@@ -25,16 +26,16 @@ public class CommonSteps {
     @Когда("^выполнен GET запрос на URL \"(.*)\"$")
     public void getRequest(String url) {
         response =
-//                given().
-//                log().all().
+                given().
+                // log().all().
                 get(url);
     }
 
     @Когда("^выполнен GET запрос на URL \"(.*)\" с сохраненным GUID$")
     public void getRequestWithGuid(String url) {
         response =
-//                given().
-//                log().all().
+                given().
+                // log().all().
                 get(url.concat(guid));
     }
 
@@ -44,12 +45,12 @@ public class CommonSteps {
         for (Map.Entry<String, String> param : params.entrySet()) {
             requestParams.put(param.getKey(), param.getValue());
         }
-        response = given().
-//                filter(logFilter).
+        response =
+                given().
                 contentType("application/json").
                 body(requestParams.toJSONString()).
                 when().
-//                log().all().
+                // log().all().
                 post(url);
         Map<String, String> createdPass = new HashMap<>();
         createdPass.put("guid", response.jsonPath().get("guid").toString());
@@ -64,11 +65,12 @@ public class CommonSteps {
         for (Map.Entry<String, String> param : params.entrySet()) {
             requestParams.put(param.getKey(), param.getValue());
         }
-        response = given().
+        response =
+                given().
                 contentType("application/json").
                 body(requestParams.toJSONString()).
                 when().
-//                log().all().
+                // log().all().
                 post(url);
         Map<String, String> createdPass = new HashMap<>();
         createdPass.put("guid", response.jsonPath().get("guid").toString());
@@ -84,11 +86,12 @@ public class CommonSteps {
         for (Map.Entry<String, String> param : params.entrySet()) {
             requestParams.put(param.getKey(), param.getValue());
         }
-        response = given().
+        response =
+                given().
                 contentType("application/json").
                 body(requestParams.toJSONString()).
                 when().
-//                log().all().
+                // log().all().
                 put(url);
         Map<String, String> createdPass = new HashMap<>();
         createdPass.put("guid", guid);
@@ -103,11 +106,12 @@ public class CommonSteps {
         for (Map.Entry<String, String> param : params.entrySet()) {
             requestParams.put(param.getKey(), param.getValue());
         }
-        response = given().
+        response =
+                given().
                 contentType("application/json").
                 body(requestParams.toJSONString()).
                 when().
-//                log().all().
+                // log().all().
                 put(url);
         Map<String, String> createdPass = new HashMap<>();
         createdPass.put("guid", guid);
@@ -120,8 +124,8 @@ public class CommonSteps {
     public void deleteRequestWithSavedGuid(String url) {
         url = url.concat(guid);
         response =
-//                given().
-//                log().all().
+                given().
+                // log().all().
                 delete(url);
     }
 
