@@ -1,26 +1,29 @@
 package steps;
 
 import com.github.javafaker.Faker;
+import com.google.common.collect.Maps;
 import cucumber.api.java.ru.Когда;
 import cucumber.api.java.ru.То;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.response.Response;
-
 import io.restassured.specification.RequestSpecification;
 import org.json.simple.JSONObject;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import static io.restassured.RestAssured.*;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static junit.framework.TestCase.assertEquals;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class CommonSteps {
     public Response response;
@@ -67,7 +70,7 @@ public class CommonSteps {
     }
 
     @Когда("^выполнен POST запрос на URL \"(.*)\" со сгенерированными случайными параметрами$")
-    public void postRequestWithGeneratedParameters(String url) {
+    public void postRequestWithGeneratedParameters(String url) throws ParseException {
         JSONObject requestParams = new JSONObject();
         Map<String, String> params = createRequestParams();
         for (Map.Entry<String, String> param : params.entrySet()) {
@@ -87,7 +90,7 @@ public class CommonSteps {
     }
 
     @Когда("^выполнен PUT запрос на URL \"(.*)\" со сгенерированными случайными параметрами и сохраненным GUID$")
-    public void putRequestWithGeneratedParameters(String url) {
+    public void putRequestWithGeneratedParameters(String url) throws ParseException {
         url = url.concat(guid);
         JSONObject requestParams = new JSONObject();
         Map<String, String> params = createRequestParams();
@@ -137,6 +140,19 @@ public class CommonSteps {
                 delete(url);
     }
 
+    /*
+    * Поправочка +
+    * Сравнивать как объекты
+    * С таким шагом падают тесты, в которых мы не передаем парметр(он не сохраняется в отправляемом Map),
+    * или передаем пустой параметр для даты(у себя сохраняем пустую строку, бд проставляет null)
+    * */
+    @То("^полученный объект соответствует отправленному$")
+    public void responseObjectMatchWithRequestObject() {
+        Map<String, String> responseMap = response.jsonPath().getMap("");
+        String diff = Maps.difference(requestParamsWithGuid, responseMap).toString() + "\n";
+        assertEquals(diff, requestParamsWithGuid, responseMap);
+    }
+
     @То("^параметры в ответе соответствуют отправленным$")
     public void responseMatchWithRequestParams() {
         String responseValue;
@@ -146,10 +162,13 @@ public class CommonSteps {
                 responseValue = response.jsonPath().get(param.getKey()).toString();
                 expectedValue = param.getValue();
                 assertThat(responseValue, equalTo(expectedValue));
-            } catch (NullPointerException e) {
-//                System.out.println("NO VALUE FOR \"" + param.getKey() + "\"");
-            }
+            } catch (NullPointerException ignored) {}
         }
+    }
+
+    @То("^в переменную GUID сохранено значение \"(.*)\"$")
+    public void saveGuid(String guid) {
+        this.guid = guid;
     }
 
     @То("^параметр guid в ответе равен сохраененному guid$")
@@ -166,7 +185,6 @@ public class CommonSteps {
     @То("^сохранен GUID из ответа$")
     public void saveResponseGuid() {
         guid = response.jsonPath().get("guid").toString();
-//        System.out.println("SAVED GUID:" + guid);
     }
 
     @То("^вывод ответа$")
@@ -176,7 +194,7 @@ public class CommonSteps {
     }
 
     @Когда("^создание нового пропуска$")
-    public void createPass() {
+    public void createPass() throws ParseException, org.json.simple.parser.ParseException, IOException {
         String url = "http://localhost:8080/pass/";
 
         postRequestWithParameters(url, createRequestParams());
@@ -194,7 +212,11 @@ public class CommonSteps {
         statusCode(404);
     }
 
-    public Map<String, String> createRequestParams() {
+    /*
+    * Поправочка +
+    * Сделать даты более реальными. +- от текущей даты
+    * */
+    public Map<String, String> createRequestParams() throws ParseException {
         Faker faker = new Faker(new Locale("ru_RU"));
         Map<String, String> requestParams = new HashMap<>();
         requestParams.put("personName", faker.name().firstName());
@@ -202,11 +224,17 @@ public class CommonSteps {
         requestParams.put("personPatronymic", faker.funnyName().name());
         requestParams.put("passportNumber", faker.number().digits(10));
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate date = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        requestParams.put("dateFrom", date.format(formatter));
-        date = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        requestParams.put("dateTo", date.format(formatter));
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String date = "2000-01-01";
+        Date firstDate = formatter.parse(date);
+        date = "2050-01-01";
+        Date lastDate = formatter.parse(date);
+        Date today = new Date(System.currentTimeMillis());
+
+        Date randomDate = faker.date().between(firstDate, today);
+        requestParams.put("dateFrom", formatter.format(randomDate));
+        randomDate = faker.date().between(today, lastDate);
+        requestParams.put("dateTo", formatter.format(randomDate));
         return  requestParams;
     }
 }
