@@ -69,5 +69,6 @@
     <orderEntry type="library" scope="TEST" name="Maven: io.cucumber:cucumber-expressions:6.2.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: io.cucumber:datatable:1.1.7" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: io.cucumber:datatable-dependencies:1.1.7" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:r05" level="project" />
   </component>
 </module>
